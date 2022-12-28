@@ -42,6 +42,7 @@ module.exports = {
         data: resCreateUser,
       });
     } catch (error) {
+      console.log(error?.message);
       return res.status(500).send({ message: "Internal server error" });
     }
   },
@@ -54,6 +55,54 @@ module.exports = {
       );
       res.status(200).send({ message: "Success get users", data: sqlGetUser });
     } catch (error) {
+      console.log(error?.message);
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  },
+
+  getUserById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const connection = pool.promise();
+
+      const [sqlGetUser] = await connection.query(
+        `select user_id, name, email, roles
+        from users u
+        join roles e using (role_id)
+        where u.user_id = '${id}'`
+      );
+
+      if (!sqlGetUser.length)
+        return res.status(400).send({ message: "User tidak ditemukan" });
+
+      res
+        .status(200)
+        .send({ message: "Success get user detail", data: sqlGetUser });
+    } catch (error) {
+      console.log(error?.message);
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  },
+
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { roles } = req.user;
+
+      if (roles != "admin")
+        return res.status(403).send({ message: "Forbidden" });
+
+      const connection = pool.promise();
+      const [sqlDeleteUser] = await connection.query(
+        `delete from users where user_id = '${id}'`
+      );
+
+      if (!sqlDeleteUser.affectedRows)
+        return res.status(500).send({ message: "Gagal menghapus user" });
+
+      res.send({ message: "Success delete user" });
+    } catch (error) {
+      console.log(error?.message);
       return res.status(500).send({ message: "Internal server error" });
     }
   },

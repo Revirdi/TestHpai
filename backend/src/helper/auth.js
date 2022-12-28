@@ -6,13 +6,13 @@ const auth = async (req, res, next) => {
     // get token
     const token = req.token;
 
-    if (!token) return res.status(401).send({ message: "unauthorize" });
+    if (!token) return res.status(401).send({ message: "unauthenticated" });
 
     const verifiedToken = verifyToken(token);
 
     const connection = pool.promise();
 
-    const sqlGetUser = `SELECT user_id, name, email FROM user WHERE user_id = ?`;
+    const sqlGetUser = `SELECT user_id, name, email, roles FROM users join roles using(role_id) WHERE user_id = ?`;
     const dataGetUser = [verifiedToken.user_id];
     const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
 
