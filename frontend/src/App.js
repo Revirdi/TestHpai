@@ -1,6 +1,6 @@
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { login } from "./store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import Home from "./pages/Home";
@@ -8,7 +8,6 @@ import Login from "./pages/Login";
 
 function App() {
   const dispatch = useDispatch();
-
   useEffect(() => {
     const userLocalStorage = localStorage.getItem("userInfo");
     if (userLocalStorage) {

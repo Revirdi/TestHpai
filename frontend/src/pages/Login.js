@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import axiosInstance from "../services/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../store/slices/authSlice";
@@ -16,7 +16,8 @@ function Login() {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const onLoginHandler = async () => {
+  const onLoginHandler = async (e) => {
+    e.preventDefault();
     try {
       const resGetUser = await axiosInstance.post("api/login", formState);
 
@@ -43,7 +44,7 @@ function Login() {
             />
           </div>
           <div class="xl:ml-20 xl:w-4/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
-            <form>
+            <form onSubmit={onLoginHandler}>
               <div class="mb-4 text-center text-xl">Sign In</div>
 
               <div class="mb-6">
@@ -70,8 +71,8 @@ function Login() {
 
               <div class="text-center ">
                 <button
-                  type="button"
-                  onClick={onLoginHandler}
+                  type="submit"
+                  // onClick={onLoginHandler}
                   class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
                 >
                   Login
