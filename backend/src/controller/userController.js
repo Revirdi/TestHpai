@@ -4,7 +4,7 @@ const { hash } = require("../lib/bcrypt");
 module.exports = {
   addUser: async (req, res) => {
     try {
-      const { name, email, password, role } = req.body;
+      const { name, email, password, roles } = req.body;
 
       const connection = pool.promise();
 
@@ -17,7 +17,7 @@ module.exports = {
         return res.status(400).send({ message: "Email is already exists" });
 
       const sqlGetRole = `SELECT role_id FROM roles WHERE roles = ?`;
-      const dataGetRole = [role];
+      const dataGetRole = [roles];
       const [resGetRole] = await connection.query(sqlGetRole, dataGetRole);
 
       const role_id = resGetRole[0].role_id;
@@ -50,9 +50,11 @@ module.exports = {
       const connection = pool.promise();
 
       const [sqlGetUser] = await connection.query(
-        `select name, email from users`
+        `select name, email, r.roles from users join roles r using (role_id);`
       );
-      res.send(sqlGetUser);
-    } catch (error) {}
+      res.status(200).send({ message: "Success get users", data: sqlGetUser });
+    } catch (error) {
+      return res.status(500).send({ message: "Internal server error" });
+    }
   },
 };
