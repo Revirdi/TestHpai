@@ -10,7 +10,7 @@ module.exports = {
       const connection = pool.promise();
 
       const [sqlGetUser] = await connection.query(
-        `select user_id, name, email, password from users where email = '${email}'`
+        `select user_id, name, email, password, roles from users u join roles r using(role_id) where u.email = '${email}'`
       );
 
       if (!sqlGetUser.length)
@@ -32,6 +32,7 @@ module.exports = {
         data: {
           user_id: user.user_id,
           name: user.name,
+          roles: user.roles,
           accessToken: token,
         },
       });

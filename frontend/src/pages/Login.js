@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import axiosInstance from "../services/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/slices/authSlice";
 
 function Login() {
-  const onLoginHandler = () => {
-    alert("wakwaw");
+  const [formState, setFormState] = useState({
+    email: "",
+    password: "",
+  });
+  const dispatch = useDispatch();
+  const name = useSelector((state) => state.auth.name);
+
+  const onHandleChange = (e) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
+
+  const onLoginHandler = async () => {
+    try {
+      const resGetUser = await axiosInstance.post("api/login", formState);
+
+      const user = resGetUser.data.data;
+      dispatch(login(user));
+
+      const strUser = JSON.stringify(user);
+      localStorage.setItem("userInfo", strUser);
+    } catch (error) {
+      console.log(error?.response?.data?.message);
+    }
+  };
+
+  if (name) return <Navigate to="/" replace />;
   return (
     <section class="h-screen">
       <div class="px-6 h-full text-gray-800">
@@ -21,19 +48,23 @@ function Login() {
 
               <div class="mb-6">
                 <input
+                  name="email"
                   type="text"
                   class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                   id="exampleFormControlInput2"
                   placeholder="Email address"
+                  onChange={onHandleChange}
                 />
               </div>
 
               <div class="mb-6">
                 <input
+                  name="password"
                   type="password"
                   class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                   id="exampleFormControlInput2"
                   placeholder="Password"
+                  onChange={onHandleChange}
                 />
               </div>
 
