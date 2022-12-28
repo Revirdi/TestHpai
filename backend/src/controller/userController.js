@@ -9,7 +9,6 @@ module.exports = {
       const connection = pool.promise();
 
       // Cek email duplicate
-
       const sqlGetUser = `SELECT email FROM users WHERE email = ?`;
       const dataGetUser = [email];
       const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
@@ -45,5 +44,15 @@ module.exports = {
     } catch (error) {
       return res.status(500).send({ message: "Internal server error" });
     }
+  },
+  getUser: async (req, res) => {
+    try {
+      const connection = pool.promise();
+
+      const [sqlGetUser] = await connection.query(
+        `select name, email from users`
+      );
+      res.send(sqlGetUser);
+    } catch (error) {}
   },
 };
