@@ -8,6 +8,13 @@ app.use(cors());
 app.use(bearerToken());
 app.use(express.json());
 
+// routes
+const { userRouters } = require("./routes");
+const { loginRouters } = require("./routes");
+
+app.use("/api/users", userRouters);
+app.use("/api/login", loginRouters);
+
 app.get("/", (req, res) => {
   res.send("API JALAN MZ 🚀");
 });
