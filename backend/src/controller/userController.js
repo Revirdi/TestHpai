@@ -51,7 +51,7 @@ module.exports = {
       const connection = pool.promise();
 
       const [sqlGetUser] = await connection.query(
-        `select name, email, r.roles from users join roles r using (role_id);`
+        `select user_id, name, email, r.roles from users join roles r using (role_id);`
       );
       res.status(200).send({ message: "Success get users", data: sqlGetUser });
     } catch (error) {

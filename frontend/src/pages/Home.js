@@ -6,7 +6,9 @@ import axiosInstance from "../services/axios";
 import { useEffect, useState } from "react";
 
 function Home() {
-  const { name, accessToken } = useSelector((state) => state.auth);
+  const { name, accessToken, user_id, roles } = useSelector(
+    (state) => state.auth
+  );
   const [users, setUsers] = useState([]);
   useEffect(() => {
     fetchUser();
@@ -27,8 +29,38 @@ function Home() {
 
   const renderUsers = () => {
     return users.map((user) => {
-      return <UserCards key={user.user_id} user={user} />;
+      return (
+        <UserCards
+          key={user.user_id}
+          user={user}
+          onDeleteHandler={onDeleteHandler}
+        />
+      );
     });
+  };
+
+  const onDeleteHandler = async (user) => {
+    try {
+      if (roles != "admin")
+        return alert("Hanya admin yang bisa menghapus data");
+      if (user.user_id == user_id)
+        return alert("tidak bisa menghapus diri sendiri");
+      const getLocalStorage = localStorage.getItem("userInfo");
+      const { accessToken } = JSON.parse(getLocalStorage);
+      const config = {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      };
+
+      const resDeleteUser = await axiosInstance.delete(
+        `/api/users/${user.user_id}`,
+        config
+      );
+      fetchUser();
+      alert(resDeleteUser?.data?.message);
+    } catch (error) {
+      console.log(error);
+      alert(error?.resDeleteUser?.data?.message);
+    }
   };
 
   if (!name) return <Navigate to="/login" replace />;

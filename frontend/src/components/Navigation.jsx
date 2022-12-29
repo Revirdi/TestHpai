@@ -14,7 +14,15 @@ function Navigation() {
     <nav className="bg-slate-300 shadow-lg">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center space-x-1 justify-between">
-          <Link className="py-4 px-2 text-lg font-semibold">Home</Link>
+          <div className="py-4">
+            <Link to="/" className="py-4 px-2 text-lg font-semibold">
+              Home
+            </Link>
+            <Link to="/tambah" className="py-4 px-2 text-lg font-semibold">
+              Tambah User
+            </Link>
+          </div>
+
           {name ? (
             <button
               className="py-1 px-2 text-lg font-semibold  border-red-500 rounded-md text-white hover:bg-red-700 bg-red-500 "

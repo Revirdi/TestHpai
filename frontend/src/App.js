@@ -5,6 +5,8 @@ import { login } from "./store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import DetailUser from "./pages/DetailUser";
+import AddUser from "./pages/AddUser";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +24,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/tambah" element={<AddUser />} />
+        <Route path="/users/:user_id" element={<DetailUser />} />
       </Routes>
     </BrowserRouter>
   );
